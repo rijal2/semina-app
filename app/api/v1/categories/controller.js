@@ -1,14 +1,19 @@
-const Categories = require('./model')
-
+const { StatusCodes } = require('http-status-codes');
+const { 
+    getAllCategories,
+    getOneCategories,
+    createCategories,
+    updateCategories,
+    deleteCategories   
+ } = require('../../../services/mongoose/categories')
 
 // Create categories
 const create = async (req, res, next) => {
     try {
-        const { name } = req.body;
+        const result = await createCategories(req)
 
-        const result = await Categories.create({ name })
-
-        res.status(201).json({
+        res.status(StatusCodes.CREATED).json({
+            message: 'success menambah kategori',
             data: result,
         })
     } catch (error) {
@@ -19,8 +24,9 @@ const create = async (req, res, next) => {
 // Menampilkan daftar categories
 const index = async (req, res, next) => {
     try {
-        const result = await Categories.find().select('_id name');
-        res.status(200).json({
+        const result = await getAllCategories();
+        res.status(StatusCodes.OK).json({
+            message: 'success',
             data: result,
         })
     } catch (error) {
@@ -31,10 +37,9 @@ const index = async (req, res, next) => {
 // Menampilkan category berdasarkan id
 const find = async (req, res, next) => {
     try {
-        const { id } = req.params;
-
-        const result = await Categories.findById({ _id: id }).select(`_id name`)
-        res.status(200).json({
+        const result = await getOneCategories(req)
+        res.status(StatusCodes.OK).json({
+            message: 'success',
             data: result,
         })
     } catch (error) {
@@ -45,11 +50,9 @@ const find = async (req, res, next) => {
 // Edit Categori berdasarkan ID
 const update = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { name } = req.body;
-
-        const result = await Categories.findByIdAndUpdate({ _id: id}, { name }, { new: true, runValidators: true });
-        res.status(200).json({
+        const result = await updateCategories(req);
+        res.status(StatusCodes.OK).json({
+            message: 'success mengubah nama kategori',
             data: result,
         })
     } catch (error) {
@@ -60,10 +63,9 @@ const update = async (req, res, next) => {
 // Hapus categori berdasarkan ID
 const destroy = async (req, res, next) => {
     try {
-        const { id } = req.params;
-
-        const result = await Categories.findByIdAndRemove(id)
-        res.status(200).json({
+        const result = await deleteCategories(req)
+        res.status(StatusCodes.OK).json({
+            message: 'succes menghapus kategori',
             data: result,
         })
 
