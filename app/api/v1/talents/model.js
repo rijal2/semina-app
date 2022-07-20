@@ -13,7 +13,7 @@ let talentSchema = Schema(
         },
         image: {
             type: mongoose.Types.ObjectId,
-            ref: 'Image',
+            ref: 'Images',
             required: true
         }
     },

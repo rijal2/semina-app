@@ -22,7 +22,6 @@ const getAllTalents = async (req) => {
 
 const createTalents = async (req) => {
     const { name, role, image } = req.body;
-
     await checkingImage(image);
 
     const check = await Talent.findOne({ name })
