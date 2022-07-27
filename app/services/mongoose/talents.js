@@ -89,5 +89,5 @@ module.exports = {
     createTalents,
     deleteTalent,
     updateTalent,
-    checkingImage
+    checkingTalent
 }
