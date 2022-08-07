@@ -91,8 +91,68 @@ const getOneEvents = async (req) => {
   return result;
 };
 
+const updateEvents = async (req) => {
+  const { id } = req.params;
+  const {
+    title,
+    date,
+    about,
+    tagline,
+    venueName,
+    keyPoint,
+    statusEvent,
+    tickets,
+    image,
+    category,
+    talent,
+  } = req.body;
+
+  await checkingImage(image);
+  await checkingCategories(category);
+  await checkingTalent(talent);
+
+  const checkEvent = await Events.findOne({
+    _id: id,
+  });
+
+  if (!checkEvent) throw new NotFoundError(`Tidak ada event dengan id: ${id}`);
+
+  // Check judul / tittle yang duplikat
+  const checkTitle = await Events.findOne({
+    title,
+    _id: { $ne: id },
+  });
+
+  if (checkTitle)
+    throw new BadRequestError(
+      `Judul yang Anda input sudah terdaftar. Silahkan ganti dengan judul yang lain`
+    );
+
+  const result = await Events.findOneAndUpdate(
+    { _id: id },
+    {
+      title,
+      date,
+      about,
+      tagline,
+      venueName,
+      keyPoint,
+      statusEvent,
+      tickets,
+      image,
+      category,
+      talent,
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!result) throw new NotFoundError(`Tidak ada event dengan id: ${id}`);
+  return result;
+};
+
 module.exports = {
   getAllEvents,
   createEvents,
   getOneEvents,
+  updateEvents,
 };
