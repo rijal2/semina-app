@@ -21,6 +21,7 @@ const createOrganizer = async (req) => {
     organizer: result._id,
   });
 
+  //aksi Delete berikut bertujuan agar password tidak terkirim di respon, bukan mengahpus pass yg sdh tersimpan di database saat create users
   delete users._doc.password;
 
   return users;

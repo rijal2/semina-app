@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
 );
 
 /**Melakukan hash password menggunakan bcryptjs */
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function (next) {
   const User = this;
   if (User.isModified("password")) {
     User.password = await bcrypt.hash(User.password, 12);
@@ -43,9 +43,9 @@ userSchema.pre("save", async (next) => {
 });
 
 /**Melakukan komparasi password asli dengan password yag telah di hash */
-userSchema.methods.comparePassword = async (candidatePassword) => {
+userSchema.methods.comparePassword = async function (candidatePassword) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
 };
 
-module.exports = model("User", userSchema);
+module.exports = new mongoose.model("User", userSchema);
