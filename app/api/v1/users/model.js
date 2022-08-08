@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,5 +32,20 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+/**Melakukan hash password menggunakan bcryptjs */
+userSchema.pre("save", async (next) => {
+  const User = this;
+  if (User.isModified("password")) {
+    User.password = await bcrypt.hash(User.password, 12);
+  }
+  next();
+});
+
+/**Melakukan komparasi password asli dengan password yag telah di hash */
+userSchema.methods.comparePassword = async (candidatePassword) => {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
 
 module.exports = model("User", userSchema);
