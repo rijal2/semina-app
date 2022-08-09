@@ -23,3 +23,5 @@ const signin = async (req) => {
 
   return token;
 };
+
+module.exports = { signin };
