@@ -26,7 +26,6 @@ const index = async (req, res, next) => {
   try {
     const result = await getAllCategories(req);
     res.status(StatusCodes.OK).json({
-      message: "success",
       data: result,
     });
   } catch (error) {

@@ -8,8 +8,8 @@ const {
 
 router.post("/categories", authenticatedUser, create);
 router.get("/categories", authenticatedUser, index);
-router.get("/categories/:id", find);
-router.put("/categories/:id", update);
-router.delete("/categories/:id", destroy);
+router.get("/categories/:id", authenticatedUser, find);
+router.put("/categories/:id", authenticatedUser, update);
+router.delete("/categories/:id", authenticatedUser, destroy);
 
 module.exports = router;
