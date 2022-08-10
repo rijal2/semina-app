@@ -1,8 +1,14 @@
 const express = require("express");
 const router = express();
 
-const { createCMSOrganizer } = require("./controller");
+const { createCMSOrganizer, createCMSUser } = require("./controller");
 
-router.post("/organizers", createCMSOrganizer);
+const {
+  authenticatedUser,
+  authorizeRoles,
+} = require("../../../middlewares/auth");
+
+router.post("/organizers", authenticatedUser, createCMSOrganizer);
+router.post("/users", authenticatedUser, createCMSUser);
 
 module.exports = router;

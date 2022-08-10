@@ -6,10 +6,35 @@ const {
   authorizeRoles,
 } = require("../../../middlewares/auth");
 
-router.post("/categories", authenticatedUser, create);
-router.get("/categories", authenticatedUser, index);
-router.get("/categories/:id", authenticatedUser, find);
-router.put("/categories/:id", authenticatedUser, update);
-router.delete("/categories/:id", authenticatedUser, destroy);
+router.post(
+  "/categories",
+  authenticatedUser,
+  authorizeRoles("organizer"),
+  create
+);
+router.get(
+  "/categories",
+  authenticatedUser,
+  authorizeRoles("organizer"),
+  index
+);
+router.get(
+  "/categories/:id",
+  authenticatedUser,
+  authorizeRoles("organizer"),
+  find
+);
+router.put(
+  "/categories/:id",
+  authenticatedUser,
+  authorizeRoles("organizer"),
+  update
+);
+router.delete(
+  "/categories/:id",
+  authenticatedUser,
+  authorizeRoles("organizer"),
+  destroy
+);
 
 module.exports = router;
