@@ -1,93 +1,113 @@
-const Talent = require('../../api/v1/talents/model')
-const { checkingImage } = require('./images')
+const Talent = require("../../api/v1/talents/model");
+const { checkingImage } = require("./images");
 
-const { NotFoundError, BadRequestError } = require('../../errors')
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllTalents = async (req) => {
-    const { keyword } = req.query;
+  const { keyword } = req.query;
 
-    // Filter pencarian berdasarkan karakter yang sesuai
-    let condition = {};
-    if(keyword) {
-        condition = { ...condition, name: {$regex: keyword, $options: 'i'} }
-    }
+  // Filter pencarian berdasarkan karakter yang sesuai
+  let condition = { organizer: req.user.organizer };
+  if (keyword) {
+    condition = { ...condition, name: { $regex: keyword, $options: "i" } };
+  }
 
-    const result = await Talent.find(condition).populate({
-        path: 'image',
-        select: '_id name'
-    }).select('_id name role image')
+  const result = await Talent.find(condition)
+    .populate({
+      path: "image",
+      select: "_id name",
+    })
+    .select("_id name role image");
 
-    return result
-}
+  return result;
+};
 
 const createTalents = async (req) => {
-    const { name, role, image } = req.body;
-    await checkingImage(image);
+  const { name, role, image } = req.body;
+  await checkingImage(image);
 
-    const check = await Talent.findOne({ name })
+  const check = await Talent.findOne({ name, organizer: req.user.organizer });
 
-    if(check) throw new BadRequestError('Nama pembicara sudah ada')
+  if (check) throw new BadRequestError("Nama pembicara sudah ada");
 
-    const result = await Talent.create({ name, role, image })
+  const result = await Talent.create({
+    name,
+    role,
+    image,
+    organizer: req.user.organizer,
+  });
 
-    return result
-}
+  return result;
+};
 
 const getOneTalent = async (req) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const result = await Talent.findById({ _id: id}).populate({
-        path: 'image',
-        select: '_id name'
-    }).select('_id name role image')
+  const result = await Talent.findById({
+    _id: id,
+    organizer: req.user.organizer,
+  })
+    .populate({
+      path: "image",
+      select: "_id name",
+    })
+    .select("_id name role image");
 
-    if(!result) throw new BadRequestError(`Pembicara dengan id: ${id} tidak ada`)
+  if (!result)
+    throw new BadRequestError(`Pembicara dengan id: ${id} tidak ada`);
 
-    return result
-}
+  return result;
+};
 
 const updateTalent = async (req) => {
-    const { id } = req.params;
-    const { name, role, image } = req.body;
-    
-    await checkingImage(image)
+  const { id } = req.params;
+  const { name, role, image } = req.body;
 
-    const check = await Talent.findOne({ name, _id: { $ne: id } })
-    if(check) throw new BadRequestError('Nama pembicara sudah ada')
+  await checkingImage(image);
 
-    const result = await Talent.findByIdAndUpdate(
-        {_id: id},
-        {name, image, role},
-        {new: true, runValidators: true}
-    )
+  const check = await Talent.findOne({
+    name,
+    organizer: req.user.organizer,
+    _id: { $ne: id },
+  });
+  if (check) throw new BadRequestError("Nama pembicara sudah ada");
 
-    if(!result) throw new NotFoundError(`Pembicara dengan id: ${id} tidak ada`)
+  const result = await Talent.findByIdAndUpdate(
+    { _id: id },
+    { name, image, role },
+    { new: true, runValidators: true }
+  );
 
-    return result
-}
+  if (!result) throw new NotFoundError(`Pembicara dengan id: ${id} tidak ada`);
+
+  return result;
+};
 
 const deleteTalent = async (req) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const result = await Talent.findOne({ _id: id })
+  const result = await Talent.findOne({
+    _id: id,
+    organizer: req.user.organizer,
+  });
 
-    if(!result) throw new NotFoundError(`Pembicara dengan id: ${id} tidak ada`)
+  if (!result) throw new NotFoundError(`Pembicara dengan id: ${id} tidak ada`);
 
-    await result.remove()
-    return result
-}
+  await result.remove();
+  return result;
+};
 
 const checkingTalent = async (id) => {
-    const result = await Talent.findOne({ _id: id })
-    if(!result) throw new NotFoundError(`Pembicara dengan id: ${id} tidak ada`)
-    return result
-}
+  const result = await Talent.findOne({ _id: id });
+  if (!result) throw new NotFoundError(`Pembicara dengan id: ${id} tidak ada`);
+  return result;
+};
 
 module.exports = {
-    getAllTalents,
-    getOneTalent,
-    createTalents,
-    deleteTalent,
-    updateTalent,
-    checkingTalent
-}
+  getAllTalents,
+  getOneTalent,
+  createTalents,
+  deleteTalent,
+  updateTalent,
+  checkingTalent,
+};
