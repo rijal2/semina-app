@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
-const { model, Schema } = mongoose
+const mongoose = require("mongoose");
+const { model, Schema } = mongoose;
 
 let imageSchema = Schema(
-    {
-    name: {type: String}
-    },
-    { timestamps: true }
-)
+  {
+    name: { type: String },
+  },
+  { timestamps: true }
+);
 
-module.exports = model('Images', imageSchema)
+module.exports = model("Image", imageSchema);

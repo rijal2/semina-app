@@ -13,11 +13,16 @@ let talentSchema = Schema(
     },
     image: {
       type: mongoose.Types.ObjectId,
-      ref: "Images",
+      ref: "Image",
+      required: true,
+    },
+    organizer: {
+      type: mongoose.Types.ObjectId,
+      ref: "Organizer",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-module.exports = model("talent", talentSchema);
+module.exports = model("Talent", talentSchema);

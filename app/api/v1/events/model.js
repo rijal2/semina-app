@@ -61,7 +61,7 @@ const EventSchema = new mongoose.Schema(
     },
     image: {
       type: mongoose.Types.ObjectId,
-      ref: "Images",
+      ref: "Image",
       required: true,
     },
     category: {
@@ -71,7 +71,12 @@ const EventSchema = new mongoose.Schema(
     },
     talent: {
       type: mongoose.Types.ObjectId,
-      ref: "talent",
+      ref: "Talent",
+      required: true,
+    },
+    organizer: {
+      type: mongoose.Types.ObjectId,
+      ref: "Organizer",
       required: true,
     },
   },
