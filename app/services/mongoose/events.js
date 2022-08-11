@@ -171,10 +171,31 @@ const deleteEvents = async (req) => {
   return result;
 };
 
+const changeStatusEvent = async (req) => {
+  const { id } = req.params;
+  const { statusEvent } = req.body;
+
+  //Cari event berdasarkan id event dan id organizer
+  const checkEvent = await Events.findOne({
+    _id: id,
+    organizer: req.user.organizer,
+  });
+
+  //Jika event yang dicari tidak ada
+  if (!checkEvent) throw new NotFoundError(`Tidak ada acara dengan id: ${id}`);
+
+  checkEvent.statusEvent = statusEvent;
+
+  await checkEvent.save();
+
+  return checkEvent;
+};
+
 module.exports = {
   getAllEvents,
   createEvents,
   getOneEvents,
   updateEvents,
   deleteEvents,
+  changeStatusEvent,
 };
