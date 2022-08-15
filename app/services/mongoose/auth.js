@@ -11,12 +11,11 @@ const signin = async (req) => {
 
   //Cek di dalam database apakah emailnya ada atau tidak
   const result = await Users.findOne({ email: email });
-  if (!result) throw new UnauthorizedError("Email atau Password Anda salah");
+  if (!result) throw new UnauthorizedError("Email Anda salah");
 
   //Cek di dalam database apakah emailnya ada atau tidak. Cek menggunakan metodh yang sudah dibuat didalam model Users yaitu ccomparePassword
   const isPasswordCorrect = await result.comparePassword(password);
-  if (!isPasswordCorrect)
-    throw new UnauthorizedError("Email atau Password Anda salah");
+  if (!isPasswordCorrect) throw new UnauthorizedError("Password Anda salah");
 
   // Buat Token
   const token = createJWT({ payload: createTokenUser(result) });
