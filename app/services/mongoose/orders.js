@@ -1,4 +1,5 @@
 const Orders = require("../../api/v1/orders/model");
+const { NotFoundError } = require("../../errors");
 
 const getAllOrders = async (req) => {
   const { limit = 10, page = 1, startDate, endDate } = req.query;
@@ -34,4 +35,28 @@ const getAllOrders = async (req) => {
   return { data: result, pages: Math.ceil(count / limit), total: count };
 };
 
-module.exports = { getAllOrders };
+const getOneOrders = async (req) => {
+  const { id } = req.params;
+  const role = req.user.role;
+  const organizer = req.user.organizer;
+  console.log(role);
+  let condition = {};
+  if (role !== "owner") {
+    condition = {
+      ...condition,
+      "historyEvent.organizer": organizer,
+      _id: id,
+    };
+  } else {
+    condition = { ...condition, _id: id };
+  }
+  console.log(condition);
+
+  const result = await Orders.findOne(condition);
+  if (!result)
+    throw new NotFoundError(`Tidak ditemukan detail order dengan id: ${id}`);
+  console.log(result);
+  return result;
+};
+
+module.exports = { getAllOrders, getOneOrders };

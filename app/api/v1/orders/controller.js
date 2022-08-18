@@ -1,4 +1,7 @@
-const { getAllOrders } = require("../../../services/mongoose/orders");
+const {
+  getAllOrders,
+  getOneOrders,
+} = require("../../../services/mongoose/orders");
 
 const { StatusCodes } = require("http-status-codes");
 
@@ -14,6 +17,19 @@ const index = async (req, res, next) => {
   }
 };
 
+const find = async (req, res, next) => {
+  try {
+    const result = await getOneOrders(req);
+
+    res.status(StatusCodes.OK).json({
+      data: { order: result },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   index,
+  find,
 };
