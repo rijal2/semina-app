@@ -12,7 +12,7 @@ const createImage = async (req) => {
 };
 
 const getAllImage = async (req) => {
-  const result = await Images.find();
+  const result = await Images.find().select("_id name");
 
   return result;
 };

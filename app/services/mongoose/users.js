@@ -47,6 +47,7 @@ const createUser = async (req) => {
     organizer: req.user.organizer,
   });
 
+  delete result._doc.password;
   return result;
 };
 
