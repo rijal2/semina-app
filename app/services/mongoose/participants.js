@@ -10,7 +10,7 @@ const {
 } = require("../../errors");
 const { createTokenParticipant, createJWT } = require("../../utils");
 
-const { otpMail } = require("../mail");
+const { otpMail, invoiceMail } = require("../mail");
 
 const signupParticipant = async (req) => {
   const { firstName, lastName, email, password, role } = req.body;
@@ -130,6 +130,27 @@ const getAllOrders = async (req) => {
  * Tugas Send email invoice
  * TODO: Ambil data email dari personal detail
  *  */
+const sendInvoice = async (personalDetail, data) => {
+  const event = await Events.findById({ _id: data.event }).select(
+    "title about"
+  );
+
+  const dates = `${data.date.getDate()} - ${data.date.getMonth()} - ${data.date.getFullYear()}`;
+  const toEmail = personalDetail.email;
+
+  const result = {
+    date: dates,
+    title: event.title,
+    about: event.about,
+    sumTicket: data.totalOrderTicket,
+    price: data.orderItems[0].ticketCategories.price,
+    totalPay: data.totalPay,
+    name: `${personalDetail.firstName} ${personalDetail.lastName}`,
+    toEmail,
+  };
+  invoiceMail(toEmail, result);
+};
+
 const checkoutOrder = async (req) => {
   const { event, personalDetail, payment, tickets } = req.body;
 
@@ -192,6 +213,7 @@ const checkoutOrder = async (req) => {
   });
 
   await result.save();
+  await sendInvoice(personalDetail, result);
   return result;
 };
 
