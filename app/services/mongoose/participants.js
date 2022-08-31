@@ -2,6 +2,8 @@ const Participant = require("../../api/v1/participants/model");
 const Events = require("../../api/v1/events/model");
 const Orders = require("../../api/v1/orders/model");
 const Payments = require("../../api/v1/payments/model");
+const Qrcodes = require("../../api/v1/qrcodes/model");
+const { createQrCode } = require("../../services/mail/qrcode");
 
 const {
   BadRequestError,
@@ -148,6 +150,15 @@ const sendInvoice = async (personalDetail, data) => {
     name: `${personalDetail.firstName} ${personalDetail.lastName}`,
     toEmail,
   };
+
+  const qr = await createQrCode(result);
+  result.path = `./public/uploads/qrimages/${result.name}.png`;
+  result.filename = `${result.name}.png`;
+  result.imgQr = `<img
+  style="width: 250px"
+  src="${qr.data}"
+/>`;
+  console.log(result);
   invoiceMail(toEmail, result);
 };
 

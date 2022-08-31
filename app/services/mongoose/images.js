@@ -1,8 +1,19 @@
 const Images = require("../../api/v1/images/model");
+const Qrcodes = require("../../api/v1/qrcodes/model");
 const { NotFoundError } = require("../../errors/index");
 
 const createImage = async (req) => {
   const result = await Images.create({
+    name: req.file
+      ? `uploads/${req.file.filename}`
+      : `uploads/avatar/default.jpeg`,
+  });
+
+  return result;
+};
+
+const saveQr = async (req) => {
+  const result = await Qrcodes.create({
     name: req.file
       ? `uploads/${req.file.filename}`
       : `uploads/avatar/default.jpeg`,
@@ -47,4 +58,5 @@ module.exports = {
   getOneImage,
   deleteImage,
   checkingImage,
+  saveQr,
 };
