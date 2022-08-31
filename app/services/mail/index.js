@@ -2,21 +2,6 @@ const nodemailer = require("nodemailer");
 const { gmail, password } = require("../../config");
 const Mustache = require("mustache");
 const fs = require("fs");
-const QRcode = require("qrcode");
-const path = require("path");
-
-const createQrCode = async (data) => {
-  try {
-    const str = JSON.stringify(data);
-    const qr = await QRcode.toDataURL(str);
-    // const base64Data = qr.replace(/^data:image\/png;base64,/, "");
-
-    console.log(qr);
-    return qr;
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -47,7 +32,7 @@ const otpMail = async (email, data) => {
 
 const invoiceMail = async (email, data) => {
   try {
-    let template = fs.readFileSync("app/views/email/coba.html", "utf8");
+    let template = fs.readFileSync("app/views/email/invoice.html", "utf8");
 
     let message = {
       from: gmail,
