@@ -125,7 +125,8 @@ const getOneEvent = async (req) => {
 
 const getAllOrders = async (req) => {
   const result = await Orders.find({ participant: req.participant.id });
-  return result;
+  const qr = await Qrcodes.find({ participant: req.participant.id });
+  return { data: result, invoice: qr };
 };
 
 /**
@@ -148,7 +149,8 @@ const sendInvoice = async (personalDetail, data) => {
     price: data.orderItems[0].ticketCategories.price,
     totalPay: data.totalPay,
     name: `${personalDetail.firstName} ${personalDetail.lastName}`,
-    toEmail,
+    email: toEmail,
+    participant: data.participant,
   };
 
   const qr = await createQrCode(result);
