@@ -35,7 +35,8 @@ const createQrCode = async (data) => {
     );
     const result = await QRcodeModel.create({
       nomorInvoice,
-      data: base64Data,
+      dataInvoice: data,
+      qrCode: base64Data,
       participant: data.participant,
     });
     return result;

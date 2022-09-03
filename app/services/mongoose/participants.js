@@ -156,8 +156,6 @@ const sendInvoice = async (personalDetail, data) => {
   const qr = await createQrCode(result);
   result.path = `./public/uploads/qrimages/${result.name}.png`;
   result.filename = `${result.name}.png`;
-  result.imgQr = `<img style="width: 250px;" src="cid:unique@cid" />`;
-  console.log(result);
   invoiceMail(toEmail, result);
 };
 
