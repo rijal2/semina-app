@@ -20,13 +20,16 @@ const createQrCode = async (data) => {
 
     const jumlahData = await QRcodeModel.countDocuments({});
 
-    const nomorInvoice = ((jumlahData + 1).toString().length = 1
-      ? `000${jumlahData + 1}`
-      : ((jumlahData + 1).toString().length = 2
-          ? `00${jumlahData + 1}`
-          : ((jumlahData + 1).toString().length = 3
-              ? `0${jumlahData + 1}`
-              : jumlahData + 1)));
+    const hasil = jumlahData + 1;
+
+    const nomorInvoice =
+      String(hasil).length === 4
+        ? String(hasil)
+        : String(hasil).length === 3
+        ? `0` + String(hasil)
+        : String(hasil).length === 2
+        ? `00` + String(hasil)
+        : `000` + String(hasil);
 
     await qrCode.toFile(
       `./public/uploads/qrimages/${data.name}.png`,
