@@ -1,5 +1,1 @@
-## Documentation
-### Organizers
-
-
-## Reviewers
+## Organizer Fix
